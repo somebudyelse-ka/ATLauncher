@@ -906,7 +906,7 @@ public class Instance extends MinecraftVersion implements ModManagement {
                     }
                 }
 
-                Process process = MCLauncher.launch(account, this, nativesTempDir,
+                Process process = MCLauncher.launch(null, this, nativesTempDir,
                     LWJGLManager.shouldUseLegacyLWJGL(this) ? lwjglNativesTempDir : null,
                     wrapperCommand, username);
 
