@@ -90,19 +90,9 @@ public class FTBPackCard extends JPanel implements RelocalizationListener {
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
         installButton.addActionListener(e -> {
-            if (AccountManager.getSelectedAccount() == null) {
-                DialogManager.okDialog().setTitle(GetText.tr("No Account Selected"))
-                        .setContent(GetText.tr("Cannot create instance as you have no account selected."))
-                        .setType(DialogManager.ERROR).show();
-
-                if (AccountManager.getAccounts().isEmpty()) {
-                    App.navigate(UIConstants.LAUNCHER_ACCOUNTS_TAB);
-                }
-            } else {
-                Analytics.trackEvent(AnalyticsEvent.forPackInstall(pack));
-                InstanceInstallerDialog instanceInstallerDialog = new InstanceInstallerDialog(pack);
-                instanceInstallerDialog.setVisible(true);
-            }
+            Analytics.trackEvent(AnalyticsEvent.forPackInstall(pack));
+            InstanceInstallerDialog instanceInstallerDialog = new InstanceInstallerDialog(pack);
+            instanceInstallerDialog.setVisible(true);
         });
         buttonsPanel.add(installButton);
 
