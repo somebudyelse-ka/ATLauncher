@@ -802,22 +802,6 @@ public class CreatePackViewModel implements SettingsListener, ICreatePackViewMod
     }
 
     private void install(Boolean isServer) {
-        if (AccountManager.getSelectedAccount() == null) {
-            DialogManager dialog = DialogManager.okDialog().setTitle(GetText.tr("No Account Selected"));
-
-            if (isServer) {
-                dialog.setContent(GetText.tr("Cannot create server as you have no account selected."));
-            } else {
-                dialog.setContent(GetText.tr("Cannot create instance as you have no account selected."));
-            }
-
-            dialog.setType(DialogManager.ERROR).show();
-            if (AccountManager.getAccounts().isEmpty()) {
-                App.navigate(UIConstants.LAUNCHER_ACCOUNTS_TAB);
-            }
-            return;
-        }
-
         final Installable installable;
         try {
             final @Nullable LoaderVersion selectedLoaderVersion = this.selectedLoaderVersion.getValue().orElse(null);
