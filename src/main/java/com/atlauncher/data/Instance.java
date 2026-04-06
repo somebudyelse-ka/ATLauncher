@@ -942,7 +942,6 @@ public class Instance extends MinecraftVersion implements ModManagement {
                 int detectedError = 0;
                 boolean crashedWithoutKnownResolution = false;
 
-                String replaceUUID = account.uuid.replace("-", "");
 
                 while ((line = br.readLine()) != null) {
                     if (line.contains("java.lang.OutOfMemoryError")
@@ -975,7 +974,6 @@ public class Instance extends MinecraftVersion implements ModManagement {
                     }
 
                     if (!LogManager.showDebug) {
-                        line = line.replaceAll(replaceUUID, "**UUID**");
                         line = line.replaceAll("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b", "**IPADDRESS**");
                     }
 
