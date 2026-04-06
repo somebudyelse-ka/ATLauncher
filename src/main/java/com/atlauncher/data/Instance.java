@@ -787,33 +787,10 @@ public class Instance extends MinecraftVersion implements ModManagement {
         return launch(false);
     }
 
-    public boolean launch(boolean offline) {
-        final MicrosoftAccount account = launcher.account == null ? AccountManager.getSelectedAccount()
-            : AccountManager.getAccountByName(launcher.account);
+    public boolean launch(boolean old_offline) {
+        final boolean offline = true;
 
-        if (account == null) {
-            DialogManager.okDialog().setTitle(GetText.tr("No Account Selected"))
-                .setContent(new HTMLBuilder().center()
-                    .text(GetText.tr("Cannot play instance as you have no account selected.")).build())
-                .setType(DialogManager.ERROR).show();
-
-            if (AccountManager.getAccounts().isEmpty()) {
-                App.navigate(UIConstants.LAUNCHER_ACCOUNTS_TAB);
-            }
-
-            App.launcher.setMinecraftLaunched(false);
-            return false;
-        }
-
-        // if Microsoft account must login again, then make sure to do that
-        if (!offline && account.mustLogin) {
-            if (!account.ensureAccountIsLoggedIn()) {
-                LogManager.info("You must login to your account before continuing.");
-                return false;
-            }
-        }
-
-        String playerName = account.minecraftUsername;
+        String playerName = "";
 
         if (offline) {
             playerName = DialogManager.okDialog().setTitle(GetText.tr("Offline Player Name"))
@@ -825,7 +802,7 @@ public class Instance extends MinecraftVersion implements ModManagement {
             }
         }
 
-        final String username = offline ? playerName : account.minecraftUsername;
+        final String username = offline ? playerName : "Player";
 
         int maximumMemory = Optional.ofNullable(this.launcher.maximumMemory).orElse(App.settings.maximumMemory);
         if ((maximumMemory < this.launcher.requiredMemory)
@@ -913,31 +890,6 @@ public class Instance extends MinecraftVersion implements ModManagement {
                     wrapperCommand = null;
                 }
 
-                if (!offline) {
-                    LogManager.info("Logging into Minecraft!");
-                    ProgressDialog<Boolean> loginDialog = new ProgressDialog<>(GetText.tr("Logging Into Minecraft"),
-                        0, GetText.tr("Logging Into Minecraft"), "Aborted login to Minecraft!");
-                    loginDialog.addThread(new Thread(() -> {
-                        loginDialog.setReturnValue(account.ensureAccessTokenValid());
-                        loginDialog.close();
-                    }));
-                    loginDialog.start();
-
-                    if (!Boolean.TRUE.equals(loginDialog.getReturnValue())) {
-                        LogManager.error("Failed to login");
-                        Analytics.trackEvent(
-                            AnalyticsEvent.forInstanceLaunchFailed(this, offline, "microsoft_login_failure"));
-                        App.launcher.setMinecraftLaunched(false);
-                        if (App.launcher.getParent() != null) {
-                            App.launcher.getParent().setVisible(true);
-                        }
-                        DialogManager.okDialog().setTitle(GetText.tr("Error Logging In"))
-                            .setContent(GetText.tr("Couldn't login with Microsoft account"))
-                            .setType(DialogManager.ERROR).show();
-                        return;
-                    }
-                }
-
                 if (enableCommands && preLaunchCommand != null) {
                     if (!executeCommand(preLaunchCommand)) {
                         LogManager.error("Failed to execute pre-launch command");
@@ -1023,15 +975,8 @@ public class Instance extends MinecraftVersion implements ModManagement {
                     }
 
                     if (!LogManager.showDebug) {
-                        line = line.replaceAll(account.minecraftUsername, "**MINECRAFTUSERNAME**");
-                        line = line.replaceAll(account.username, "**MINECRAFTUSERNAME**");
-                        line = line.replaceAll(account.uuid, "**UUID**");
                         line = line.replaceAll(replaceUUID, "**UUID**");
                         line = line.replaceAll("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b", "**IPADDRESS**");
-                    }
-
-                    if (account.getAccessToken() != null) {
-                        line = line.replaceAll(account.getAccessToken(), "**ACCESSTOKEN**");
                     }
 
                     if (line.contains("log4j:")) {
