@@ -122,6 +122,26 @@ public class ModrinthApi {
         return searchModrinth(gameVersions, query, page, sort, categories, ModrinthProjectType.SHADER);
     }
 
+    public static ModrinthSearchResult searchDataPacks(List<String> gameVersions, String query, int page,
+        String sort, String category) {
+        List<List<String>> categories = new ArrayList<>();
+
+        categories.add(Collections.singletonList("datapack"));
+
+        if (category != null) {
+            categories.add(Collections.singletonList(category));
+        }
+
+        ModrinthSearchResult searchResult = searchModrinth(gameVersions, query, page, sort, categories,
+            ModrinthProjectType.DATAPACK);
+
+        if (searchResult == null || searchResult.hits.isEmpty()) {
+            return searchModrinth(gameVersions, query, page, sort, categories, ModrinthProjectType.MOD);
+        }
+
+        return searchResult;
+    }
+
     public static ModrinthSearchResult searchModsForForge(List<String> gameVersions, String query, int page,
         String sort, String category) {
         List<List<String>> categories = category == null ? Collections.singletonList(Collections.singletonList("forge"))
@@ -183,6 +203,16 @@ public class ModrinthApi {
         List<List<String>> categories = category == null
             ? Collections.singletonList(Collections.singletonList("fabric"))
             : Arrays.asList(Collections.singletonList(category), Collections.singletonList("fabric"));
+
+        return searchModrinth(gameVersions, query, page, sort, categories,
+            ModrinthProjectType.MOD);
+    }
+
+    public static ModrinthSearchResult searchModsForLegacyFabric(List<String> gameVersions, String query, int page,
+        String sort, String category) {
+        List<List<String>> categories = category == null
+            ? Collections.singletonList(Collections.singletonList("legacy-fabric"))
+            : Arrays.asList(Collections.singletonList(category), Collections.singletonList("legacy-fabric"));
 
         return searchModrinth(gameVersions, query, page, sort, categories,
             ModrinthProjectType.MOD);
@@ -345,6 +375,17 @@ public class ModrinthApi {
 
         return categories.stream().filter(c -> c.projectType == ModrinthProjectType.RESOURCEPACK)
             .sorted(Comparator.comparing(c -> c.name)).collect(Collectors.toList());
+    }
+
+    public static List<ModrinthCategory> getCategoriesForDataPacks() {
+        List<ModrinthCategory> categories = getCategories();
+
+        return categories.stream()
+            .filter(c -> c.projectType == ModrinthProjectType.MOD || c.projectType == ModrinthProjectType.DATAPACK)
+            .collect(Collectors.toMap(c -> c.name, c -> c, (existing, replacement) -> existing))
+            .values().stream()
+            .sorted(Comparator.comparing(c -> c.name))
+            .collect(Collectors.toList());
     }
 
     public static ModrinthVersion getVersionFromSha1Hash(String hash) {

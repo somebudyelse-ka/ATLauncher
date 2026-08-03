@@ -15,9 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.atlauncher.data;
+package com.atlauncher.themes;
 
-public enum Type {
-    jar, dependency, forge, mcpc, worlds, mods, plugins, ic2lib, denlib, flan, coremods, extract, decomp, millenaire,
-    texturepack, resourcepack, texturepackextract, resourcepackextract, shaderpack, datapack
+public class CatppuccinFrappe extends CatppuccinMacchiato {
+    public static boolean install() {
+        instance = new CatppuccinFrappe();
+
+        return setup(instance);
+    }
+
+    @Override
+    public String getName() {
+        return "Catppuccin (Frappé)";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Catppuccin (Frappé) by sgoudham";
+    }
+
+    @Override
+    public boolean isIntelliJTheme() {
+        return true;
+    }
 }
