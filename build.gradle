@@ -115,7 +115,6 @@ application {
     mainClass = 'com.atlauncher.App'
     applicationDefaultJvmArgs = [
         "-Djna.nosys=true",
-        "-Djava.net.preferIPv4Stack=true",
         "-Dawt.useSystemAAFontSettings=on",
         "-Dswing.aatext=true"
     ]
@@ -266,7 +265,6 @@ macAppBundle {
     javaProperties.put('user.dir', '$APP_ROOT/Contents/Java')
     javaProperties.put('apple.laf.useScreenMenuBar', 'true')
     javaExtras.put("-Djna.nosys", "true")
-    javaExtras.put("-Djava.net.preferIPv4Stack", "true")
     javaExtras.put("-Dawt.useSystemAAFontSettings", "on")
     javaExtras.put("-Dswing.aatext", "true")
     bundleExtras.put("JVMVersion", project.targetCompatibility.toString() + "+")
@@ -294,10 +292,10 @@ launch4j {
     bundledJrePath = "jre/;%JAVA_HOME%;%PATH%"
     jvmOptions = [
         "-Djna.nosys=true",
-        "-Djava.net.preferIPv4Stack=true",
         "-Dawt.useSystemAAFontSettings=on",
         "-Dswing.aatext=true"
     ]
+    cmdLine = "--no-console"
 }
 
 artifacts {
