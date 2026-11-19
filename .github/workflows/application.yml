@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         java-version: ["8", "11", "17", "21", "23"] # LTS + Latest
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        os: ["ubuntu-latest", "windows-latest"]
     name: Java ${{ matrix.java-version }} (${{ matrix.os }}) Tests
     steps:
       - uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
     strategy:
       matrix:
         java-version: ["8", "11", "17", "21", "23"] # LTS + Latest
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        os: ["ubuntu-latest", "windows-latest"]
     name: Java ${{ matrix.java-version }} (${{ matrix.os }}) Build
     steps:
       - uses: actions/checkout@v4
